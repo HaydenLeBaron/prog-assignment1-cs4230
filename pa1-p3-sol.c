@@ -7,9 +7,22 @@ void pa1p3opt(int n, double c[n][n], double a[n][n], double b[n][n]) {
 // Performance of the base code and your modified code will be reported.
 // If the correctness check fails, it will be reported.
 // The only code changes must be below this line.
+
+/* // Default version
   for (i = 0; i < n; i++)
     for (j = 0; j < n; j++)
       for (k = 0; k < n; k++)
         c[j][i] = c[j][i] + a[k][j] * b[k][i];
+
+*/
+
+// Change loop order to align with array access pattern
+// 6.06 GFLOPs
+ for (k = 0; k < n; k++)
+   for (j = 0; j < n; j++)
+     for (i = 0; i < n; i++)
+        c[j][i] = c[j][i] + a[k][j] * b[k][i];
+
+
 }
 
