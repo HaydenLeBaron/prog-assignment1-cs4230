@@ -30,7 +30,7 @@ Correctness Check Passed
 
 The first optimization I attempted was loop tiling. I tried a variety of ways of tiling but I never broke past 0.7 GFLOPs with loop tiling.
 
-Then I looked closer and noticed that the work done on arrays `y` and `z` were done totally independently. This signalled to me that they could be broken into two separate loops. So I peeled the loops, like so:
+Then I looked closer and noticed that the work done on arrays `y` and `z` were done totally independently. This signaled to me that they could be broken into two separate loops. So I peeled the loops, like so:
 
 ```c
   for (i = 0; i < n; i++)
@@ -61,7 +61,6 @@ Now the arrays were being accessed in a way that would leverage spatial locality
 For problem 2 we started with this code:
 
 ```c
-
   int i, j, k;
   double sum;
   for (i = 0; i < n; i++)
@@ -73,7 +72,7 @@ For problem 2 we started with this code:
     }
 ```
 
-We first can get rid of the sum variable, noticing that we can substitute y[i][k] for sum. This doesn't yet improve performance. We now have:
+We first can get rid of the sum variable, noticing that we can substitute `y[i][k]` for sum. This doesn't yet improve performance. We now have:
 
 ```c
   int i, j, k;
@@ -87,7 +86,7 @@ We first can get rid of the sum variable, noticing that we can substitute y[i][k
   }
 ```
 
-We were then able to factor out the initialization of y[i][k] to 0.0 (for all i and k) to another loop. We still have not yet improved performance, but we're almost there!
+We were then able to factor out the initialization of `y[i][k]` to 0.0 (for all i and k) to another loop. We still have not yet improved performance, but we're almost there!
 ```c
   int i, j, k;
   for (i=0; i < n; i++)
@@ -102,8 +101,9 @@ We were then able to factor out the initialization of y[i][k] to 0.0 (for all i 
   }
 ```
 
-Now that we have separated the work out into different loops, we can use the same optimiztion technique used in problem 1 and change the loop order so that the loop order corresponds with the array access patterns. This allows us to leverage spatial locality when caching. Now y[i][k] accesses are in  i-k and i-j-k loops, and a x[i][j][k] access is in an i-j-k nested loop. This improves performance to 2.74 GFLOPS
+Now that we have separated the work out into different loops, we can use the same optimization technique used in problem 1 and change the loop order so that the loop order corresponds with the array access patterns. This allows us to leverage spatial locality when caching. Now `y[i][k]` accesses are in  i-k and i-j-k loops, and a `x[i][j][k]` access is in an `i-j-k` nested loop. This improves performance to 2.74 GFLOPS
 
+```c
   int i, j, k;
   for (i = 0; i < n; i++)
     for (k = 0; k < n; k++)
@@ -115,10 +115,9 @@ Now that we have separated the work out into different loops, we can use the sam
         y[i][k] += x[i][j][k] * x[i][j][k];
       }
     }
-  }
- 
+  } 
 
-} 
+```
 
 
 
@@ -133,9 +132,12 @@ We started with this code:
 ```
 
 But the array access pattern does not line up with loop index order. We thus are not taking advantage of spatial locality when caching. We have the following access patterns: 
+
+```
 - c[j][i] 
 - a[k][j]
 - b[k][i]
+```
 
 Thus, the optimal solution will have j before i, k before j, and k before i. This implies the pattern k-j-i. Sure enough, when we permute the loops we get performance at 6.06 GFLOPs:
 
