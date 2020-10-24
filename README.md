@@ -45,8 +45,14 @@ make
 # Submission
   Put your report in PDF format (report.pdf) in Prog-assignment1 folder and create zip file of
   Prog-assignment1 folder and upload it to canvas.
+
 # Notes
    1. If you use code hosting website including chpc's gitlab make sure you
       create private repository.
    2. If you have questions, ask on Piazza under `Prog-assignment1`.
    3. See [chpc_guide.docx](https://utah.instructure.com/courses/638169/files/folder/Notes-Handouts?preview=105874702) if you haven't already.
+
+
+## Other
+
+To see other attempts at optimization (that weren't as good), see commit aefd506a5e7638317df2e6176d561d39beffc024

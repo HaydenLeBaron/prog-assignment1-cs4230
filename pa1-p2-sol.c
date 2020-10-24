@@ -8,8 +8,8 @@ void pa1p2opt(int n, double x[n][n][n], double y[n][n]) {
 // If the correctness check fails, it will be reported.
 // The only code changes must be below this line.
 
+// We started with this code:
 /*
-// Original
   int i, j, k;
   double sum;
   for (i = 0; i < n; i++)
@@ -21,8 +21,10 @@ void pa1p2opt(int n, double x[n][n][n], double y[n][n]) {
     }
 */
 
+// We first can get rid of the sum variable, noticing that we
+// can substitute y[i][k] for sum. This doesn't yet improve performance.
+// We now have:
 /*
-// Get rid of sum variable (correct but same performance)
   int i, j, k;
   for (i = 0; i < n; i++) {
     for (k = 0; k < n; k++) {
@@ -34,9 +36,10 @@ void pa1p2opt(int n, double x[n][n][n], double y[n][n]) {
   }
 */
 
+// We were then able to factor out the initialization
+// of y[i][k] to 0.0 (for all i and k) to another loop.
+// We still have not yet improved performance, but we're almost there!
 /*
-// Get rid of sum var and init y[i][k] to 10 for all i, k--to take out of other loop
-// (Same performance)
   int i, j, k;
   for (i=0; i < n; i++)
     for (k=0; k < n; k++)
@@ -51,9 +54,13 @@ void pa1p2opt(int n, double x[n][n][n], double y[n][n]) {
   }
 */
 
-// Do everything done before, but this time invert j and k loops
-// so that x[i][j][k] is lined up with loop order
-// 2.74 GFLOPS
+// Now that we have separated the work out into different loops, we can use the same 
+// optimiztion technique used in problem 1 and change the loop order so that the loop
+// order corresponds with the array access patterns. This allows us to leverage spatial
+// locality when caching. Now y[i][k] accesses are in  i-k and i-j-k loops, and a x[i][j][k]
+// access is in an i-j-k nested loop. 
+// This improves performance to 2.74 GFLOPS
+
   int i, j, k;
   for (i = 0; i < n; i++)
     for (k = 0; k < n; k++)
